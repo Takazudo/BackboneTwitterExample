@@ -144,8 +144,8 @@ window.TwitterSearches = new TwitterSeachCollection
 class ListViewSpinner
   constructor: ($parent) ->
     options =
-      color: '#fff',
-      length: 20,
+      color: '#fff'
+      length: 20
       radius: 30
     spinner = (new Spinner(options)).spin($parent[0])
     @el = spinner.el
