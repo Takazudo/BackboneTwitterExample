@@ -30,6 +30,7 @@ config.init({
     'js/all.min.js': [
       'js/jsfragments/underscore-min.js',
       'js/jsfragments/backbone-min.js',
+      'js/jsfragments/jquery.tmpldeck.min.js',
       '<banner>',
       'js/jsfragments/app.min.js'
     ]
