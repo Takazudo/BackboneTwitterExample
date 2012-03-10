@@ -1,3 +1,180 @@
 @import "compass/css3";
+@import "compass/typography";
 
-.test1{ color:red; }
+*{
+	@include box-sizing('border-box');
+}
+html,body,h1,h2,h4,h5,h6,ul,li,p{
+	margin:0;
+	padding:0;
+}
+html{
+	line-height:1.4;
+	color:#fff;
+	background:#333;
+}
+html,body{
+	height:100%;
+}
+a{
+	@include link-colors(white, white, white, white, white);
+	text-decoration:underline;
+}
+.mod-all{
+	height:100%;
+	font-size:.78em;
+}
+.mod-header{
+	border-bottom:1px solid #fff;
+	*zoom:1; /* ie */
+	position:fixed;
+	left:0;
+	right:0;
+	top:0;
+	height:30px;
+	width:100%;
+	display:table;
+	background:#333;
+	z-index:1000;
+	.mod-header-inner{
+		display:table-cell;
+		vertical-align:middle;
+		text-align:left;
+		padding:0 10px;
+		h1{
+			font-size:15px;
+			float:left;
+			white-space:nowrap;
+		}
+		.mod-header-util{
+			float:right;
+		}
+	}
+}
+.mod-searchform{
+}
+	input{
+		vertical-align:middle;
+	}
+	input[type=search]{
+		height:13px;
+		width:200px;
+	}
+.mod-listcontainer{
+	height:100%;
+	width:100%;
+	overflow-x:scroll;
+	overflow-y:hidden;
+	.mod-listcontainer-inner{
+		height:100%;
+		width:2000px;
+	}
+}
+.mod-tweetlist{
+	width:300px;
+	height:100%;
+	position:relative;
+	float:left;
+	vertical-align:top;
+	border-right:1px solid #fff;
+	padding:30px 0 0;
+	.mod-tweetlist-hd{
+		height:30px;
+		line-height:30px;
+		font-size:15px;
+		position:absolute;
+		left:0;
+		top:0;
+		right:0;
+		border-bottom:1px solid #fff;
+		position:relative;
+		.mod-tweetlist-label{
+			display:block;
+			line-height:29px;
+			padding:0 10px;
+			&:hover{
+				background:#666;
+			}
+		}
+		.mod-tweetlist-remove{
+			position:absolute;
+			right:5px;
+			top:5px;
+			bottom:5px;
+			width:20px;
+			line-height:20px;
+			text-align:center;
+			background:#fff;
+			color:#333;
+			text-decoration:none;
+		}
+	}
+	.mod-tweetlist-bd{
+		overflow-y:scroll;
+		position:absolute;
+		top:60px;
+		left:0;
+		right:0;
+		bottom:0;
+		padding:0 0 20px;
+		&::-webkit-scrollbar{
+			width:8px;
+			background:#333;
+		}
+		&::-webkit-scrollbar-thumb{
+			background:#888;
+		}
+	}
+}
+
+.mod-tweetitem{
+	padding:10px;
+	border-bottom:1px dashed #666;
+	position:relative;
+	.mod-tweetitem-util{
+		position:absolute;
+		left:5px;
+		top:5px;
+		bottom:5px;
+		width:50px;
+		a{
+			position:absolute;
+			left:0;
+			top:0;
+			bottom:0;
+			right:0;
+			background:#fff;
+			color:#333;
+			opacity:0;
+			@include border-radius(5px);
+		}
+	}
+	&:hover{
+		background:#484848;
+		.mod-tweetitem-util a{
+			opacity:1;
+		}
+	}
+	.mod-tweetitem-prof{
+		float:left;
+		@include border-radius(2px);
+		border:1px solid #aaa;
+		img{
+			float:left;
+		}
+	}
+	.mod-tweetitem-woprof{
+		overflow:hidden;
+		padding:0 0 0 10px;
+		*zoom:1; /* ie */
+		.mod-tweetitem-info{
+			font-size:.8em;
+			padding:8px 0 0;
+			.mod-tweetitem-name{
+				font-size:1.3em;
+			}
+			.mod-tweetitem-time{
+			}
+		}
+	}
+}
