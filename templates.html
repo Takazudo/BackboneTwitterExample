@@ -1,0 +1,24 @@
+TweetView {{{
+	<div class="mod-tweetitem-prof"><img src="<%- profile_image_url %>" width="40" height="40" alt=""></div>
+	<div class="mod-tweetitem-woprof">
+		<div><%= twttr.txt.autoLink(text) %></div>
+		<div class="mod-tweetitem-info">
+			<span class="mod-tweetitem-name"><a href="http://twitter.com/<%- from_user %>">@<%- from_user %></a></span>
+			<span class="mod-tweetitem-time">- <a href="http://twitter.com/<%- from_user %>/status/<%- id_str %>"><%= twttr.formatDate(created_at) %></a></span>
+			<!--<span class="mod-tweetitem-time">- <%- created_at %></span>-->
+		</div>
+	</div>
+}}}
+
+TweetListView-frame {{{
+	<div class="mod-tweetlist-hd">
+		<a class="mod-tweetlist-label" href="http://twitter.com/search/?q=<%- query %>" target="_blank">Search: <%- query %></a>
+		<span class="mod-tweetlist-remove">×</span>
+	</div>
+	<div class="mod-tweetlist-bd"><!-- items here --></div>
+}}}
+
+TweetListView-error {{{
+	ERROR...
+}}}
+

@@ -15,7 +15,8 @@ config.init({
       'js/coffee/*.coffee',
       'style/scss/*.scss'
     ],
-    tasks: 'coffee min compass concat cssmin notifyOK'
+    //tasks: 'coffee min compass concat cssmin notifyOK'
+    tasks: 'coffee compass concat cssmin notifyOK'
   },
   compass: {
     'style/scss': 'style/cssfragments'
@@ -28,11 +29,17 @@ config.init({
       'style/cssfragments/h5bp-after.css'
     ],
     'js/all.min.js': [
+      'js/jsfragments/jquery.easing.1.3.min.js',
+      'js/jsfragments/twitter-text-1.4.16.min.js',
+      'js/jsfragments/spin.min.js',
       'js/jsfragments/underscore-min.js',
       'js/jsfragments/backbone-min.js',
+      'js/jsfragments/backbone.localStorage-min.js',
       'js/jsfragments/jquery.tmpldeck.min.js',
+      'js/jsfragments/jquery.imgloader.min.js',
       '<banner>',
-      'js/jsfragments/app.min.js'
+      //'js/jsfragments/app.min.js'
+      'js/jsfragments/app.js'
     ]
   },
   coffee: {
@@ -86,4 +93,5 @@ task.registerTask('notifyOK', 'done!', function(){
   proc.exec("growlnotify -t 'grunt.js' -m '＼(^o^)／'");
 });
 
-task.registerTask('default', 'coffee min compass concat cssmin notifyOK');
+//task.registerTask('default', 'coffee min compass concat cssmin notifyOK');
+task.registerTask('default', 'coffee compass concat cssmin notifyOK');

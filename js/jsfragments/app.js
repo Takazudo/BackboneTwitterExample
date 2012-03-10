@@ -1,5 +1,449 @@
 (function() {
+  var ListContainerView, ListViewSpinner, Manager, SearchForm, Tweet, TweetCollection, TweetListView, TweetView, TwitterSeach, TwitterSeachCollection, WidthChanger, api, deck, wait,
+    __hasProp = Object.prototype.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; },
+    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  $(function() {});
+  deck = $.TmplDeck('templates.html');
+
+  $.fn.linkBlankify = function() {
+    return this.each(function() {
+      return $(this).find('a').each(function() {
+        return $(this).attr('target', '_blank');
+      });
+    });
+  };
+
+  wait = function(milli) {
+    return $.Deferred(function(defer) {
+      return setTimeout(function() {
+        return defer.resolve();
+      }, milli || 0);
+    }).promise();
+  };
+
+  twttr.formatDate = function(dateString) {
+    var d, date, hour, min, month, ret, year;
+    d = new Date(dateString);
+    year = d.getFullYear();
+    if (year !== year) {
+      d = new Date(dateString.replace(/^([^ ]+) ([^ ]+) ([^ ]+) ([^ ]+) ([^ ]+) ([^ ]+)$/, '$1, $3 $2 $6 $4 $5'));
+      year = d.getFullYear();
+    }
+    month = d.getMonth() + 1;
+    date = d.getDate();
+    hour = d.getHours();
+    min = d.getMinutes();
+    return ret = "" + year + "/" + month + "/" + date + " " + hour + ":" + min;
+  };
+
+  api = {};
+
+  api.searchTweets = function(query) {
+    var req, ret;
+    req = null;
+    ret = $.Deferred(function(defer) {
+      return req = $.ajax({
+        url: 'http://search.twitter.com/search.json',
+        dataType: 'jsonp',
+        data: {
+          result_type: 'recent',
+          rpp: 100,
+          page: 1,
+          q: query
+        }
+      }).pipe(function(res) {
+        return defer.resolve(res);
+      }, function() {
+        return defer.reject();
+      }).always(function() {
+        return req = null;
+      });
+    }).promise();
+    ret.abort = function() {
+      if (req != null) req.abort();
+      return ret;
+    };
+    return ret;
+  };
+
+  Manager = (function() {
+
+    function Manager() {}
+
+    _.extend(Manager.prototype, Backbone.Events);
+
+    Manager.prototype.add = function(item) {
+      if (this.items == null) this.items = [];
+      this.items.push(item);
+      return this.trigger('sizechange', this.size());
+    };
+
+    Manager.prototype.reset = function() {
+      this.items = [];
+      return this;
+    };
+
+    Manager.prototype.size = function() {
+      if (this.items) {
+        return this.items.length;
+      } else {
+        return 0;
+      }
+    };
+
+    Manager.prototype.remove = function(item) {
+      this.items = _.without(this.items, item);
+      this.trigger('sizechange', this.size());
+      return this;
+    };
+
+    return Manager;
+
+  })();
+
+  Tweet = (function(_super) {
+
+    __extends(Tweet, _super);
+
+    function Tweet() {
+      Tweet.__super__.constructor.apply(this, arguments);
+    }
+
+    return Tweet;
+
+  })(Backbone.Model);
+
+  TweetCollection = (function(_super) {
+
+    __extends(TweetCollection, _super);
+
+    function TweetCollection() {
+      TweetCollection.__super__.constructor.apply(this, arguments);
+    }
+
+    TweetCollection.prototype.model = Tweet;
+
+    TweetCollection.prototype.meta = null;
+
+    return TweetCollection;
+
+  })(Backbone.Collection);
+
+  TwitterSeach = (function(_super) {
+
+    __extends(TwitterSeach, _super);
+
+    function TwitterSeach() {
+      TwitterSeach.__super__.constructor.apply(this, arguments);
+    }
+
+    TwitterSeach.prototype.fetch = function() {
+      var _this = this;
+      this.trigger('searchstart');
+      this.fetchDefer = api.searchTweets(this.get('query'));
+      this.fetchDefer.pipe(function(res) {
+        _this.tweets = new TweetCollection(res.results);
+        return _this.trigger('success');
+      }, function() {
+        return _this.trigger('error');
+      });
+      return this.fetchDefer;
+    };
+
+    TwitterSeach.prototype.destroy = function() {
+      var _ref;
+      if ((_ref = this.fetchDefer) != null) _ref.abort();
+      TwitterSeach.__super__.destroy.apply(this, arguments);
+      return this;
+    };
+
+    return TwitterSeach;
+
+  })(Backbone.Model);
+
+  TwitterSeachCollection = (function(_super) {
+
+    __extends(TwitterSeachCollection, _super);
+
+    function TwitterSeachCollection() {
+      TwitterSeachCollection.__super__.constructor.apply(this, arguments);
+    }
+
+    TwitterSeachCollection.prototype.model = TwitterSeach;
+
+    TwitterSeachCollection.prototype.localStorage = new Store('twittersearch');
+
+    TwitterSeachCollection.prototype.loadCached = function() {
+      var _this = this;
+      return _.each(this.localStorage.findAll(), function(data) {
+        return _this.add(data);
+      });
+    };
+
+    TwitterSeachCollection.prototype.updateCache = function(twitterSearch) {
+      if (this.localStorage.find(twitterSearch)) {
+        this.localStorage.update(twitterSearch);
+      } else {
+        this.localStorage.create(twitterSearch);
+      }
+      this.localStorage.save();
+      return this;
+    };
+
+    TwitterSeachCollection.prototype.add = function(options) {
+      var twitterSearch;
+      twitterSearch = new this.model(options);
+      TwitterSeachCollection.__super__.add.call(this, twitterSearch);
+      this.updateCache(twitterSearch);
+      return this;
+    };
+
+    return TwitterSeachCollection;
+
+  })(Backbone.Collection);
+
+  window.TwitterSearches = new TwitterSeachCollection;
+
+  ListViewSpinner = (function() {
+
+    function ListViewSpinner($parent) {
+      var options, spinner;
+      options = {
+        color: '#fff',
+        length: 20,
+        radius: 30
+      };
+      spinner = (new Spinner(options)).spin($parent[0]);
+      this.el = spinner.el;
+      this.$el = $(spinner.el);
+    }
+
+    return ListViewSpinner;
+
+  })();
+
+  TweetView = (function(_super) {
+
+    __extends(TweetView, _super);
+
+    function TweetView() {
+      TweetView.__super__.constructor.apply(this, arguments);
+    }
+
+    TweetView.prototype.className = 'mod-tweetitem';
+
+    TweetView.prototype.render = function() {
+      this.$el.html(deck.tmpl('TweetView', this.model.toJSON()));
+      return this;
+    };
+
+    return TweetView;
+
+  })(Backbone.View);
+
+  TweetListView = (function(_super) {
+
+    __extends(TweetListView, _super);
+
+    function TweetListView() {
+      TweetListView.__super__.constructor.apply(this, arguments);
+    }
+
+    TweetListView.prototype.className = 'mod-tweetlist';
+
+    TweetListView.prototype.events = {
+      'click .mod-tweetlist-remove': 'remove'
+    };
+
+    TweetListView.prototype.initialize = function() {
+      this.els = {};
+      return this.manager = new Manager;
+    };
+
+    TweetListView.prototype.refreshTweets = function() {
+      var _this = this;
+      this.model.tweets.each(function(tweet) {
+        var view;
+        view = new TweetView({
+          model: tweet
+        });
+        _this.manager.add(view);
+        return _this.els.bd.append((view.render().el));
+      });
+      return this;
+    };
+
+    TweetListView.prototype.renderLoading = function() {
+      var _this = this;
+      this.$el.html(deck.tmpl('TweetListView-frame', this.model.toJSON()));
+      this.els.bd = this.$('.mod-tweetlist-bd');
+      wait(0).done(function() {
+        var spinner;
+        spinner = new ListViewSpinner(_this.els.bd);
+        return _this.els.spinner = spinner.$el;
+      });
+      return this;
+    };
+
+    TweetListView.prototype.renderContent = function() {
+      var _this = this;
+      this.els.spinner.fadeOut(function() {
+        _this.els.spinner.remove();
+        _this.refreshTweets();
+        return _this.els.bd.hide().fadeIn().linkBlankify();
+      });
+      return this;
+    };
+
+    TweetListView.prototype.renderError = function() {
+      this.$el.html(deck.tmpl('TweetListView-error'));
+      return this;
+    };
+
+    TweetListView.prototype.remove = function() {
+      var to,
+        _this = this;
+      to = {
+        width: 0,
+        opacity: 0
+      };
+      this.$el.animate(to, 800, 'easeOutExpo', function() {
+        _this.model.destroy();
+        _this.$el.remove();
+        return _this.trigger('remove', _this);
+      });
+      return this;
+    };
+
+    return TweetListView;
+
+  })(Backbone.View);
+
+  WidthChanger = (function(_super) {
+
+    __extends(WidthChanger, _super);
+
+    function WidthChanger() {
+      WidthChanger.__super__.constructor.apply(this, arguments);
+    }
+
+    WidthChanger.prototype.options = {
+      widthPerItem: 300
+    };
+
+    WidthChanger.prototype.initialize = function() {
+      return this.update(1);
+    };
+
+    WidthChanger.prototype.update = function(size) {
+      return this.$el.width(this.options.widthPerItem * size);
+    };
+
+    return WidthChanger;
+
+  })(Backbone.View);
+
+  ListContainerView = (function(_super) {
+
+    __extends(ListContainerView, _super);
+
+    function ListContainerView() {
+      this.addOne = __bind(this.addOne, this);
+      ListContainerView.__super__.constructor.apply(this, arguments);
+    }
+
+    ListContainerView.prototype.initialize = function() {
+      var _this = this;
+      this.manager = new Manager;
+      this.els = {
+        items: this.$('.mod-listcontainer-items')
+      };
+      this.widthChanger = new WidthChanger({
+        el: this.els.items
+      });
+      this.manager.bind('sizechange', function(size) {
+        return _this.widthChanger.update(size);
+      });
+      return TwitterSearches.bind('add', this.addOne);
+    };
+
+    ListContainerView.prototype.addOne = function(twitterSearch) {
+      var model, view,
+        _this = this;
+      model = twitterSearch;
+      view = new TweetListView({
+        model: model
+      });
+      this.manager.add(view);
+      view.bind('remove', function() {
+        return _this.manager.remove(view);
+      });
+      model.bind('searchstart', function() {
+        return view.renderLoading();
+      });
+      model.bind('success', function() {
+        return view.renderContent();
+      });
+      model.bind('error', function() {
+        return view.renderError();
+      });
+      model.fetch();
+      this.els.items.append(view.el);
+      return this;
+    };
+
+    return ListContainerView;
+
+  })(Backbone.View);
+
+  SearchForm = (function(_super) {
+
+    __extends(SearchForm, _super);
+
+    function SearchForm() {
+      this._submitHandler = __bind(this._submitHandler, this);
+      SearchForm.__super__.constructor.apply(this, arguments);
+    }
+
+    SearchForm.prototype.events = {
+      'submit form': '_submitHandler'
+    };
+
+    SearchForm.prototype.initialize = function() {
+      return this.els = {
+        input: this.$('input[type=search]')
+      };
+    };
+
+    SearchForm.prototype._submitHandler = function(e) {
+      var val;
+      e.preventDefault();
+      val = this.els.input.val();
+      if (!val) return;
+      return this.trigger('submit', val);
+    };
+
+    return SearchForm;
+
+  })(Backbone.View);
+
+  deck.load().done(function() {
+    return $(function() {
+      var listcontainer, searchform;
+      listcontainer = new ListContainerView({
+        el: $('#listcontainer')
+      });
+      searchform = new SearchForm({
+        el: $('#searchform')
+      });
+      searchform.bind('submit', function(query) {
+        return TwitterSearches.add({
+          query: query
+        });
+      });
+      return TwitterSearches.loadCached();
+    });
+  });
 
 }).call(this);

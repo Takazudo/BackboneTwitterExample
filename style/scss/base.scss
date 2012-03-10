@@ -58,16 +58,15 @@ a{
 	}
 	input[type=search]{
 		height:13px;
-		width:200px;
+		width:100px;
 	}
 .mod-listcontainer{
 	height:100%;
 	width:100%;
 	overflow-x:scroll;
 	overflow-y:hidden;
-	.mod-listcontainer-inner{
+	.mod-listcontainer-items{
 		height:100%;
-		width:2000px;
 	}
 }
 .mod-tweetlist{
@@ -97,12 +96,14 @@ a{
 			}
 		}
 		.mod-tweetlist-remove{
+			cursor:pointer;
 			position:absolute;
 			right:5px;
 			top:5px;
 			bottom:5px;
 			width:20px;
-			line-height:20px;
+			line-height:16px;
+			padding:0 0 4px;
 			text-align:center;
 			background:#fff;
 			color:#333;
@@ -114,7 +115,7 @@ a{
 		position:absolute;
 		top:60px;
 		left:0;
-		right:0;
+		width:299px;
 		bottom:0;
 		padding:0 0 20px;
 		&::-webkit-scrollbar{
@@ -131,34 +132,14 @@ a{
 	padding:10px;
 	border-bottom:1px dashed #666;
 	position:relative;
-	.mod-tweetitem-util{
-		position:absolute;
-		left:5px;
-		top:5px;
-		bottom:5px;
-		width:50px;
-		a{
-			position:absolute;
-			left:0;
-			top:0;
-			bottom:0;
-			right:0;
-			background:#fff;
-			color:#333;
-			opacity:0;
-			@include border-radius(5px);
-		}
-	}
 	&:hover{
 		background:#484848;
-		.mod-tweetitem-util a{
-			opacity:1;
-		}
 	}
 	.mod-tweetitem-prof{
 		float:left;
 		@include border-radius(2px);
 		border:1px solid #aaa;
+		background:#fff;
 		img{
 			float:left;
 		}
