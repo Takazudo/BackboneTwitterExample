@@ -24,19 +24,20 @@ html, body {
   height: 100%;
 }
 
-/* line 19, ../scss/base.scss */
-a {
+/* line 20, ../scss/base.scss */
+a,
+a:visited {
   color: #fff;
   text-decoration: underline;
 }
 
-/* line 23, ../scss/base.scss */
+/* line 24, ../scss/base.scss */
 a:hover {
   color: #333;
   background: #fff;
 }
 
-/* line 27, ../scss/base.scss */
+/* line 28, ../scss/base.scss */
 .mod-all {
   height: 100%;
   font-size: .78em;
