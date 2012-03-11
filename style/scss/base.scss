@@ -36,6 +36,7 @@ a{
 	display:table;
 	background:#333;
 	z-index:1000;
+	opacity:.5;
 	.mod-header-inner{
 		display:table-cell;
 		vertical-align:middle;
@@ -67,6 +68,60 @@ a{
 	overflow-y:hidden;
 	.mod-listcontainer-items{
 		height:100%;
+	}
+}
+.mod-newlist{
+	height:100%;
+	position:relative;
+	float:left;
+	.mod-newlist-btn{
+		background:#fff;
+		color:#333;
+		font-size:30px;
+		line-height:50px;
+		text-align:center;
+		width:50px;
+		cursor:pointer;
+	}
+	.mod-newlist-content-closed{
+		margin:30px 0 0;
+	}
+	.mod-newlist-content-opened{
+		margin:30px 0 0;
+		padding:80px 20px 0;
+		border-right:1px solid #fff;
+		height:100%;
+		position:relative;
+		h2{
+			font-size:1.5em;
+			padding:0 0 8px;
+		}
+		input[type=text]{
+			margin:0 8px 0 0;
+			width:180px;
+		}
+		.mod-newlist-btn{
+			position:absolute;
+			left:0;
+			top:0;
+		}
+	}
+}
+.mod-newlist.state-close{
+	.mod-newlist-content-closed{
+		display:block;
+	}
+	.mod-newlist-content-opened{
+		display:none;
+	}
+}
+.mod-newlist.state-open{
+	width:300px;
+	.mod-newlist-content-closed{
+		display:none;
+	}
+	.mod-newlist-content-opened{
+		display:block;
 	}
 }
 .mod-tweetlist{

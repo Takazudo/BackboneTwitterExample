@@ -66,49 +66,117 @@ a:active {
   display: table;
   background: #333;
   z-index: 1000;
+  opacity: .5;
 }
-/* line 39, ../scss/base.scss */
+/* line 40, ../scss/base.scss */
 .mod-header .mod-header-inner {
   display: table-cell;
   vertical-align: middle;
   text-align: left;
   padding: 0 10px;
 }
-/* line 44, ../scss/base.scss */
+/* line 45, ../scss/base.scss */
 .mod-header .mod-header-inner h1 {
   font-size: 15px;
   float: left;
   white-space: nowrap;
 }
-/* line 49, ../scss/base.scss */
+/* line 50, ../scss/base.scss */
 .mod-header .mod-header-inner .mod-header-util {
   float: right;
 }
 
-/* line 56, ../scss/base.scss */
+/* line 57, ../scss/base.scss */
 input {
   vertical-align: middle;
 }
 
-/* line 59, ../scss/base.scss */
+/* line 60, ../scss/base.scss */
 input[type=search] {
   height: 13px;
   width: 100px;
 }
 
-/* line 63, ../scss/base.scss */
+/* line 64, ../scss/base.scss */
 .mod-listcontainer {
   height: 100%;
   width: 100%;
   overflow-x: scroll;
   overflow-y: hidden;
 }
-/* line 68, ../scss/base.scss */
+/* line 69, ../scss/base.scss */
 .mod-listcontainer .mod-listcontainer-items {
   height: 100%;
 }
 
-/* line 72, ../scss/base.scss */
+/* line 73, ../scss/base.scss */
+.mod-newlist {
+  height: 100%;
+  position: relative;
+  float: left;
+}
+/* line 77, ../scss/base.scss */
+.mod-newlist .mod-newlist-btn {
+  background: #fff;
+  color: #333;
+  font-size: 30px;
+  line-height: 50px;
+  text-align: center;
+  width: 50px;
+  cursor: pointer;
+}
+/* line 86, ../scss/base.scss */
+.mod-newlist .mod-newlist-content-closed {
+  margin: 30px 0 0;
+}
+/* line 89, ../scss/base.scss */
+.mod-newlist .mod-newlist-content-opened {
+  margin: 30px 0 0;
+  padding: 80px 20px 0;
+  border-right: 1px solid #fff;
+  height: 100%;
+  position: relative;
+}
+/* line 95, ../scss/base.scss */
+.mod-newlist .mod-newlist-content-opened h2 {
+  font-size: 1.5em;
+  padding: 0 0 8px;
+}
+/* line 99, ../scss/base.scss */
+.mod-newlist .mod-newlist-content-opened input[type=text] {
+  margin: 0 8px 0 0;
+  width: 180px;
+}
+/* line 103, ../scss/base.scss */
+.mod-newlist .mod-newlist-content-opened .mod-newlist-btn {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+/* line 111, ../scss/base.scss */
+.mod-newlist.state-close .mod-newlist-content-closed {
+  display: block;
+}
+/* line 114, ../scss/base.scss */
+.mod-newlist.state-close .mod-newlist-content-opened {
+  display: none;
+}
+
+/* line 118, ../scss/base.scss */
+.mod-newlist.state-open {
+  width: 300px;
+}
+/* line 120, ../scss/base.scss */
+.mod-newlist.state-open .mod-newlist-content-closed {
+  display: none;
+}
+/* line 123, ../scss/base.scss */
+.mod-newlist.state-open .mod-newlist-content-opened {
+  display: block;
+}
+
+/* line 127, ../scss/base.scss */
 .mod-tweetlist {
   width: 300px;
   height: 100%;
@@ -118,7 +186,7 @@ input[type=search] {
   border-right: 1px solid #fff;
   padding: 30px 0 0;
 }
-/* line 80, ../scss/base.scss */
+/* line 135, ../scss/base.scss */
 .mod-tweetlist .mod-tweetlist-hd {
   height: 30px;
   line-height: 30px;
@@ -130,17 +198,17 @@ input[type=search] {
   border-bottom: 1px solid #fff;
   position: relative;
 }
-/* line 90, ../scss/base.scss */
+/* line 145, ../scss/base.scss */
 .mod-tweetlist .mod-tweetlist-hd .mod-tweetlist-label {
   display: block;
   line-height: 29px;
   padding: 0 10px;
 }
-/* line 94, ../scss/base.scss */
+/* line 149, ../scss/base.scss */
 .mod-tweetlist .mod-tweetlist-hd .mod-tweetlist-label:hover {
   background: #666;
 }
-/* line 98, ../scss/base.scss */
+/* line 153, ../scss/base.scss */
 .mod-tweetlist .mod-tweetlist-hd .mod-tweetlist-remove {
   cursor: pointer;
   position: absolute;
@@ -155,7 +223,7 @@ input[type=search] {
   color: #333;
   text-decoration: none;
 }
-/* line 113, ../scss/base.scss */
+/* line 168, ../scss/base.scss */
 .mod-tweetlist .mod-tweetlist-bd {
   overflow-y: scroll;
   position: absolute;
@@ -165,27 +233,27 @@ input[type=search] {
   bottom: 0;
   padding: 0 0 20px;
 }
-/* line 121, ../scss/base.scss */
+/* line 176, ../scss/base.scss */
 .mod-tweetlist .mod-tweetlist-bd::-webkit-scrollbar {
   width: 8px;
   background: #333;
 }
-/* line 125, ../scss/base.scss */
+/* line 180, ../scss/base.scss */
 .mod-tweetlist .mod-tweetlist-bd::-webkit-scrollbar-thumb {
   background: #888;
 }
 
-/* line 131, ../scss/base.scss */
+/* line 186, ../scss/base.scss */
 .mod-tweetitem {
   padding: 10px;
   border-bottom: 1px dashed #666;
   position: relative;
 }
-/* line 135, ../scss/base.scss */
+/* line 190, ../scss/base.scss */
 .mod-tweetitem:hover {
   background: #484848;
 }
-/* line 138, ../scss/base.scss */
+/* line 193, ../scss/base.scss */
 .mod-tweetitem .mod-tweetitem-prof {
   float: left;
   -moz-border-radius: 2px;
@@ -197,23 +265,23 @@ input[type=search] {
   border: 1px solid #aaa;
   background: #fff;
 }
-/* line 143, ../scss/base.scss */
+/* line 198, ../scss/base.scss */
 .mod-tweetitem .mod-tweetitem-prof img {
   float: left;
 }
-/* line 147, ../scss/base.scss */
+/* line 202, ../scss/base.scss */
 .mod-tweetitem .mod-tweetitem-woprof {
   overflow: hidden;
   padding: 0 0 0 10px;
   *zoom: 1;
   /* ie */
 }
-/* line 151, ../scss/base.scss */
+/* line 206, ../scss/base.scss */
 .mod-tweetitem .mod-tweetitem-woprof .mod-tweetitem-info {
   font-size: .8em;
   padding: 8px 0 0;
 }
-/* line 154, ../scss/base.scss */
+/* line 209, ../scss/base.scss */
 .mod-tweetitem .mod-tweetitem-woprof .mod-tweetitem-info .mod-tweetitem-name {
   font-size: 1.3em;
 }
