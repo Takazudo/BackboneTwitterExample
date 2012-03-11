@@ -45,7 +45,7 @@ twttr.formatDate = (dateString) ->
   year = d.getFullYear()
   if(year != year)
     #if year was NaN, this returns true. IE needs this
-    d = new Date(dateString.replace(/^([^ ]+) ([^ ]+) ([^ ]+) ([^ ]+) ([^ ]+) ([^ ]+)$/,'$1, $3 $2 $6 $4 $5'));
+    d = new Date(dateString.replace(/^([^ ]+) ([^ ]+) ([^ ]+) ([^ ]+) ([^ ]+) ([^ ]+)$/,'$1, $3 $2 $6 $4 $5'))
     year = d.getFullYear()
   month = d.getMonth()+1
   date = d.getDate()
@@ -94,6 +94,7 @@ class Manager
     @items ?= []
     @items.push item
     @trigger 'sizechange', @size()
+    @
   reset: ->
     @items = []
     @
@@ -200,6 +201,7 @@ class NewList extends Backbone.View
       content_opened: @$('.mod-newlist-content-opened')
   toggle: =>
     @$el.toggleClass 'state-close state-open'
+    @
 
 class SearchForm extends Backbone.View
   # serach form in NewList
@@ -213,6 +215,7 @@ class SearchForm extends Backbone.View
     val = @els.input.val()
     if not val then return
     @trigger 'submit', val
+    @
 
 # ============================================
 # View - tweets related things

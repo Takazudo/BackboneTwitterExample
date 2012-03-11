@@ -94,7 +94,8 @@
     Manager.prototype.add = function(item) {
       if (this.items == null) this.items = [];
       this.items.push(item);
-      return this.trigger('sizechange', this.size());
+      this.trigger('sizechange', this.size());
+      return this;
     };
 
     Manager.prototype.reset = function() {
@@ -293,7 +294,8 @@
     };
 
     NewList.prototype.toggle = function() {
-      return this.$el.toggleClass('state-close state-open');
+      this.$el.toggleClass('state-close state-open');
+      return this;
     };
 
     return NewList;
@@ -324,7 +326,8 @@
       e.preventDefault();
       val = this.els.input.val();
       if (!val) return;
-      return this.trigger('submit', val);
+      this.trigger('submit', val);
+      return this;
     };
 
     return SearchForm;
