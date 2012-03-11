@@ -248,15 +248,22 @@ class TweetListView extends Backbone.View
       @els.bd.append (deck.draw 'TweetView-noresult')
     @
   renderLoading: ->
+    @renderContentStarted = false
     @$el.html( deck.tmpl 'TweetListView-frame', @model.toJSON() )
     @els.bd = @$('.mod-tweetlist-bd')
-    wait(0).done => #need to wait a little for spinner positioning
+    wait(0).done =>
+      # need to wait a little for spinner positioning
+      # + need to check renderContent was started or not;
+      # because sometimes backgrounded tab may delay this scope's process then
+      # it attach spinner after content was rendered.
+      if @renderContentStarted is true then return
       spinner = new ListViewSpinner @els.bd
       @els.spinner = spinner.$el
     @
   renderContent: ->
+    @renderContentStarted = true
     @els.spinner.fadeOut =>
-      @els.spinner.remove()
+      @els.spinner?.remove()
       @refreshItems()
       @els.bd.hide().fadeIn().linkBlankify()
     @

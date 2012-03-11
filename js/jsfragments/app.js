@@ -402,10 +402,12 @@
 
     TweetListView.prototype.renderLoading = function() {
       var _this = this;
+      this.renderContentStarted = false;
       this.$el.html(deck.tmpl('TweetListView-frame', this.model.toJSON()));
       this.els.bd = this.$('.mod-tweetlist-bd');
       wait(0).done(function() {
         var spinner;
+        if (_this.renderContentStarted === true) return;
         spinner = new ListViewSpinner(_this.els.bd);
         return _this.els.spinner = spinner.$el;
       });
@@ -414,8 +416,10 @@
 
     TweetListView.prototype.renderContent = function() {
       var _this = this;
+      this.renderContentStarted = true;
       this.els.spinner.fadeOut(function() {
-        _this.els.spinner.remove();
+        var _ref;
+        if ((_ref = _this.els.spinner) != null) _ref.remove();
         _this.refreshItems();
         return _this.els.bd.hide().fadeIn().linkBlankify();
       });
