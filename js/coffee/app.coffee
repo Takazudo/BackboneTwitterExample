@@ -11,6 +11,14 @@ $.fn.linkBlankify = ->
     $(@).find('a').each ->
       $(@).attr 'target', '_blank'
 
+$.fn.shake = ->
+  @each ->
+    n = 30
+    $(@).stop()
+      .animate({ left: "-6px" }, n).animate({ left: "6px" }, n)
+      .animate({ left: "-6px" }, n).animate({ left: "6px" }, n)
+      .animate({ left: "0px" }, n)
+
 # ============================================
 # utils
 # ============================================
@@ -88,7 +96,7 @@ class Manager
     @
 
 # ============================================
-# Models
+# Model
 # ============================================
 
 class Tweet extends Backbone.Model
@@ -137,11 +145,10 @@ class TwitterSeachCollection extends Backbone.Collection
     @
 
 # define concrete models
-
 window.TwitterSearches = new TwitterSeachCollection
 
 # ============================================
-# Views
+# View - tiny thigns
 # ============================================
 
 class ListViewSpinner
@@ -159,6 +166,40 @@ class TweetView extends Backbone.View
   render: ->
     @$el.html( deck.tmpl 'TweetView', @model.toJSON() )
     @
+
+class WidthChanger extends Backbone.View
+  options:
+    widthPerItem: 300
+  initialize: ->
+    @update 1
+  update: (size) ->
+    @$el.width (@options.widthPerItem * (size + 1))
+
+class NewList extends Backbone.View
+  events:
+    'click .mod-newlist-btn': 'toggle'
+  initialize: ->
+    @els =
+      content_closed: @$('.mod-newlist-content-closed')
+      content_opened: @$('.mod-newlist-content-opened')
+  toggle: =>
+    @$el.toggleClass 'state-close state-open'
+
+class SearchForm extends Backbone.View
+  events:
+    'submit': '_submitHandler'
+  initialize: ->
+    @els =
+      input: @$('input[type=search]')
+  _submitHandler: (e) =>
+    e.preventDefault()
+    val = @els.input.val()
+    if not val then return
+    @trigger 'submit', val
+
+# ============================================
+# View - something related tweets
+# ============================================
 
 class TweetListView extends Backbone.View
   className: 'mod-tweetlist'
@@ -199,14 +240,6 @@ class TweetListView extends Backbone.View
       @trigger 'remove', @
     @
 
-class WidthChanger extends Backbone.View
-  options:
-    widthPerItem: 300
-  initialize: ->
-    @update 1
-  update: (size) ->
-    @$el.width (@options.widthPerItem * (size + 1))
-
 class ListContainerView extends Backbone.View
   initialize: ->
     @manager = new Manager
@@ -229,27 +262,79 @@ class ListContainerView extends Backbone.View
     @els.items.append view.el
     @
 
-class SearchForm extends Backbone.View
-  events:
-    'submit': '_submitHandler'
-  initialize: ->
-    @els =
-      input: @$('input[type=search]')
-  _submitHandler: (e) =>
-    e.preventDefault()
-    val = @els.input.val()
-    if not val then return
-    @trigger 'submit', val
+# ============================================
+# View - AutoReloader
+# ============================================
 
-class NewList extends Backbone.View
+# timer manager
+class ReloadTimer
+  _.extend @::, Backbone.Events
+  _tickDefer: null
+  constructor: (interval) ->
+    @interval = @counter = interval
+  tick: ->
+    currentTick =
+      paused: false
+      tick: =>
+        wait(1000).done =>
+          if currentTick.paused then return
+          @counter--
+          @trigger 'tick', @counter
+          if @counter is 0
+            @counter = @interval + 1
+            @trigger 'hitzero'
+          @tick()
+      destroy: ->
+        currentTick.paused = true
+    currentTick.tick()
+    @_currentTick = currentTick
+    @
+  resume: ->
+    @_currentTick?.destroy()
+    @tick()
+    @
+  pause: ->
+    @_currentTick?.destroy()
+    @
+  reset: (interval) ->
+    if interval then @interval = interval
+    @counter = @interval + 1
+    @
+
+class AutoReloader extends Backbone.View
   events:
-    'click .mod-newlist-btn': 'toggle'
+    'focus': 'toInput'
+    'blur': 'escInput'
+    'keydown': '_keydownHandler'
   initialize: ->
-    @els =
-      content_closed: @$('.mod-newlist-content-closed')
-      content_opened: @$('.mod-newlist-content-opened')
-  toggle: =>
-    @$el.toggleClass 'state-close state-open'
+    interval = 360
+    @timer = new ReloadTimer interval
+    @$el.val interval
+    @timer.bind 'tick', (time) => @$el.val time
+    @timer.bind 'hitzero', => @trigger 'hitzero'
+    @timer.resume()
+  toInput: =>
+    @_lastVal = @$el.val()
+    @$el.addClass 'state-input'
+    @timer.pause()
+    @
+  escInput: =>
+    @$el.removeClass 'state-input'
+    val = @$el.val()
+    if val != @_lastVal
+      if /^\d+$/.test(val)
+        num = parseInt(val, 10)
+        @timer.reset num
+      else
+        @$el.shake()
+        @$el.val @timer.counter
+    @timer.resume()
+    @
+  reset: -> @timer.reset()
+  _keydownHandler: (e) =>
+    if e.keyCode is 13 # pushing enter key invokes blur
+      @$el.trigger 'blur'
+    @
 
 # ============================================
 # do it do it
@@ -260,9 +345,15 @@ deck.load().done ->
     newlist = new NewList {el: $('#newlist')}
     listcontainer = new ListContainerView {el: $('#listcontainer')}
     searchform = new SearchForm {el: $('#searchform')}
+    autoreloader = new AutoReloader {el: $('#autoreloader')}
 
     searchform.bind 'submit', (query) ->
       TwitterSearches.add {query: query}
     TwitterSearches.loadCached()
 
-    $('#reloadall').click -> TwitterSearches.updateAllSearches()
+    autoreloader.bind 'hitzero', ->
+      TwitterSearches.updateAllSearches()
+
+    $('#reloadall').click ->
+      autoreloader.reset()
+      TwitterSearches.updateAllSearches()

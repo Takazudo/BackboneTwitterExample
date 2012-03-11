@@ -1,5 +1,5 @@
 (function() {
-  var ListContainerView, ListViewSpinner, Manager, NewList, SearchForm, Tweet, TweetCollection, TweetListView, TweetView, TwitterSeach, TwitterSeachCollection, WidthChanger, api, deck, wait,
+  var AutoReloader, ListContainerView, ListViewSpinner, Manager, NewList, ReloadTimer, SearchForm, Tweet, TweetCollection, TweetListView, TweetView, TwitterSeach, TwitterSeachCollection, WidthChanger, api, deck, wait,
     __hasProp = Object.prototype.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; },
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
@@ -11,6 +11,24 @@
       return $(this).find('a').each(function() {
         return $(this).attr('target', '_blank');
       });
+    });
+  };
+
+  $.fn.shake = function() {
+    return this.each(function() {
+      var n;
+      n = 30;
+      return $(this).stop().animate({
+        left: "-6px"
+      }, n).animate({
+        left: "6px"
+      }, n).animate({
+        left: "-6px"
+      }, n).animate({
+        left: "6px"
+      }, n).animate({
+        left: "0px"
+      }, n);
     });
   };
 
@@ -249,6 +267,89 @@
 
   })(Backbone.View);
 
+  WidthChanger = (function(_super) {
+
+    __extends(WidthChanger, _super);
+
+    function WidthChanger() {
+      WidthChanger.__super__.constructor.apply(this, arguments);
+    }
+
+    WidthChanger.prototype.options = {
+      widthPerItem: 300
+    };
+
+    WidthChanger.prototype.initialize = function() {
+      return this.update(1);
+    };
+
+    WidthChanger.prototype.update = function(size) {
+      return this.$el.width(this.options.widthPerItem * (size + 1));
+    };
+
+    return WidthChanger;
+
+  })(Backbone.View);
+
+  NewList = (function(_super) {
+
+    __extends(NewList, _super);
+
+    function NewList() {
+      this.toggle = __bind(this.toggle, this);
+      NewList.__super__.constructor.apply(this, arguments);
+    }
+
+    NewList.prototype.events = {
+      'click .mod-newlist-btn': 'toggle'
+    };
+
+    NewList.prototype.initialize = function() {
+      return this.els = {
+        content_closed: this.$('.mod-newlist-content-closed'),
+        content_opened: this.$('.mod-newlist-content-opened')
+      };
+    };
+
+    NewList.prototype.toggle = function() {
+      return this.$el.toggleClass('state-close state-open');
+    };
+
+    return NewList;
+
+  })(Backbone.View);
+
+  SearchForm = (function(_super) {
+
+    __extends(SearchForm, _super);
+
+    function SearchForm() {
+      this._submitHandler = __bind(this._submitHandler, this);
+      SearchForm.__super__.constructor.apply(this, arguments);
+    }
+
+    SearchForm.prototype.events = {
+      'submit': '_submitHandler'
+    };
+
+    SearchForm.prototype.initialize = function() {
+      return this.els = {
+        input: this.$('input[type=search]')
+      };
+    };
+
+    SearchForm.prototype._submitHandler = function(e) {
+      var val;
+      e.preventDefault();
+      val = this.els.input.val();
+      if (!val) return;
+      return this.trigger('submit', val);
+    };
+
+    return SearchForm;
+
+  })(Backbone.View);
+
   TweetListView = (function(_super) {
 
     __extends(TweetListView, _super);
@@ -327,30 +428,6 @@
 
   })(Backbone.View);
 
-  WidthChanger = (function(_super) {
-
-    __extends(WidthChanger, _super);
-
-    function WidthChanger() {
-      WidthChanger.__super__.constructor.apply(this, arguments);
-    }
-
-    WidthChanger.prototype.options = {
-      widthPerItem: 300
-    };
-
-    WidthChanger.prototype.initialize = function() {
-      return this.update(1);
-    };
-
-    WidthChanger.prototype.update = function(size) {
-      return this.$el.width(this.options.widthPerItem * (size + 1));
-    };
-
-    return WidthChanger;
-
-  })(Backbone.View);
-
   ListContainerView = (function(_super) {
 
     __extends(ListContainerView, _super);
@@ -405,68 +482,137 @@
 
   })(Backbone.View);
 
-  SearchForm = (function(_super) {
+  ReloadTimer = (function() {
 
-    __extends(SearchForm, _super);
+    _.extend(ReloadTimer.prototype, Backbone.Events);
 
-    function SearchForm() {
-      this._submitHandler = __bind(this._submitHandler, this);
-      SearchForm.__super__.constructor.apply(this, arguments);
+    ReloadTimer.prototype._tickDefer = null;
+
+    function ReloadTimer(interval) {
+      this.interval = this.counter = interval;
     }
 
-    SearchForm.prototype.events = {
-      'submit': '_submitHandler'
-    };
-
-    SearchForm.prototype.initialize = function() {
-      return this.els = {
-        input: this.$('input[type=search]')
+    ReloadTimer.prototype.tick = function() {
+      var currentTick,
+        _this = this;
+      currentTick = {
+        paused: false,
+        tick: function() {
+          return wait(1000).done(function() {
+            if (currentTick.paused) return;
+            _this.counter--;
+            _this.trigger('tick', _this.counter);
+            if (_this.counter === 0) {
+              _this.counter = _this.interval + 1;
+              _this.trigger('hitzero');
+            }
+            return _this.tick();
+          });
+        },
+        destroy: function() {
+          return currentTick.paused = true;
+        }
       };
+      currentTick.tick();
+      this._currentTick = currentTick;
+      return this;
     };
 
-    SearchForm.prototype._submitHandler = function(e) {
-      var val;
-      e.preventDefault();
-      val = this.els.input.val();
-      if (!val) return;
-      return this.trigger('submit', val);
+    ReloadTimer.prototype.resume = function() {
+      var _ref;
+      if ((_ref = this._currentTick) != null) _ref.destroy();
+      this.tick();
+      return this;
     };
 
-    return SearchForm;
+    ReloadTimer.prototype.pause = function() {
+      var _ref;
+      if ((_ref = this._currentTick) != null) _ref.destroy();
+      return this;
+    };
 
-  })(Backbone.View);
+    ReloadTimer.prototype.reset = function(interval) {
+      if (interval) this.interval = interval;
+      this.counter = this.interval + 1;
+      return this;
+    };
 
-  NewList = (function(_super) {
+    return ReloadTimer;
 
-    __extends(NewList, _super);
+  })();
 
-    function NewList() {
-      this.toggle = __bind(this.toggle, this);
-      NewList.__super__.constructor.apply(this, arguments);
+  AutoReloader = (function(_super) {
+
+    __extends(AutoReloader, _super);
+
+    function AutoReloader() {
+      this._keydownHandler = __bind(this._keydownHandler, this);
+      this.escInput = __bind(this.escInput, this);
+      this.toInput = __bind(this.toInput, this);
+      AutoReloader.__super__.constructor.apply(this, arguments);
     }
 
-    NewList.prototype.events = {
-      'click .mod-newlist-btn': 'toggle'
+    AutoReloader.prototype.events = {
+      'focus': 'toInput',
+      'blur': 'escInput',
+      'keydown': '_keydownHandler'
     };
 
-    NewList.prototype.initialize = function() {
-      return this.els = {
-        content_closed: this.$('.mod-newlist-content-closed'),
-        content_opened: this.$('.mod-newlist-content-opened')
-      };
+    AutoReloader.prototype.initialize = function() {
+      var interval,
+        _this = this;
+      interval = 360;
+      this.timer = new ReloadTimer(interval);
+      this.$el.val(interval);
+      this.timer.bind('tick', function(time) {
+        return _this.$el.val(time);
+      });
+      this.timer.bind('hitzero', function() {
+        return _this.trigger('hitzero');
+      });
+      return this.timer.resume();
     };
 
-    NewList.prototype.toggle = function() {
-      return this.$el.toggleClass('state-close state-open');
+    AutoReloader.prototype.toInput = function() {
+      this._lastVal = this.$el.val();
+      this.$el.addClass('state-input');
+      this.timer.pause();
+      return this;
     };
 
-    return NewList;
+    AutoReloader.prototype.escInput = function() {
+      var num, val;
+      this.$el.removeClass('state-input');
+      val = this.$el.val();
+      if (val !== this._lastVal) {
+        if (/^\d+$/.test(val)) {
+          num = parseInt(val, 10);
+          this.timer.reset(num);
+        } else {
+          this.$el.shake();
+          this.$el.val(this.timer.counter);
+        }
+      }
+      this.timer.resume();
+      return this;
+    };
+
+    AutoReloader.prototype.reset = function() {
+      return this.timer.reset();
+    };
+
+    AutoReloader.prototype._keydownHandler = function(e) {
+      if (e.keyCode === 13) this.$el.trigger('blur');
+      return this;
+    };
+
+    return AutoReloader;
 
   })(Backbone.View);
 
   deck.load().done(function() {
     return $(function() {
-      var listcontainer, newlist, searchform;
+      var autoreloader, listcontainer, newlist, searchform;
       newlist = new NewList({
         el: $('#newlist')
       });
@@ -476,13 +622,20 @@
       searchform = new SearchForm({
         el: $('#searchform')
       });
+      autoreloader = new AutoReloader({
+        el: $('#autoreloader')
+      });
       searchform.bind('submit', function(query) {
         return TwitterSearches.add({
           query: query
         });
       });
       TwitterSearches.loadCached();
+      autoreloader.bind('hitzero', function() {
+        return TwitterSearches.updateAllSearches();
+      });
       return $('#reloadall').click(function() {
+        autoreloader.reset();
         return TwitterSearches.updateAllSearches();
       });
     });

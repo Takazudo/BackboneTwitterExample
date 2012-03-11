@@ -51,7 +51,25 @@ a{
 			position:absolute;
 			right:10px;
 			top:4px;
-			span{
+			.mod-header-auto{
+				position:relative;
+				float:left;
+				white-space:nowrap;
+				padding:0;
+				font-size:14px;
+				line-height:18px;
+				border:1px solid #fff;
+				background:#fff;
+				color:#333;
+				width:4em;
+				text-align:center;
+				margin:0 4px 0 0;
+				&.state-input{
+					color:#fff;
+					background:#000;
+				}
+			}
+			.mod-header-reload{
 				float:left;
 				white-space:nowrap;
 				font-size:14px;
