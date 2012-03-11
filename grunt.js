@@ -36,7 +36,6 @@ config.init({
       'js/jsfragments/backbone-min.js',
       'js/jsfragments/backbone.localStorage-min.js',
       'js/jsfragments/jquery.tmpldeck.min.js',
-      'js/jsfragments/jquery.imgloader.min.js',
       '<banner>',
       //'js/jsfragments/app.min.js'
       'js/jsfragments/app.js'

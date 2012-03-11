@@ -1,5 +1,5 @@
 (function() {
-  var AutoReloader, ListContainerView, ListViewSpinner, Manager, NewList, ReloadTimer, SearchForm, Tweet, TweetCollection, TweetListView, TweetView, TwitterSeach, TwitterSeachCollection, WidthChanger, api, deck, wait,
+  var AutoReloader, ListContainerView, ListViewSpinner, Manager, NewList, ReloadTimer, SearchForm, Tweet, TweetCollection, TweetListView, TweetView, TwitterSeach, TwitterSeachCollection, TwitterSearches, WidthChanger, api, deck, wait,
     __hasProp = Object.prototype.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; },
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
@@ -71,11 +71,11 @@
           q: query
         }
       }).pipe(function(res) {
-        return defer.resolve(res);
-      }, function() {
-        return defer.reject();
-      }).always(function() {
-        return req = null;
+        return defer.resolve(res, function() {
+          return defer.reject().always(function() {
+            return req = null;
+          });
+        });
       });
     }).promise();
     ret.abort = function() {
@@ -141,8 +141,6 @@
     }
 
     TweetCollection.prototype.model = Tweet;
-
-    TweetCollection.prototype.meta = null;
 
     return TweetCollection;
 
@@ -228,7 +226,7 @@
 
   })(Backbone.Collection);
 
-  window.TwitterSearches = new TwitterSeachCollection;
+  TwitterSearches = new TwitterSeachCollection;
 
   ListViewSpinner = (function() {
 
@@ -247,25 +245,6 @@
     return ListViewSpinner;
 
   })();
-
-  TweetView = (function(_super) {
-
-    __extends(TweetView, _super);
-
-    function TweetView() {
-      TweetView.__super__.constructor.apply(this, arguments);
-    }
-
-    TweetView.prototype.className = 'mod-tweetitem';
-
-    TweetView.prototype.render = function() {
-      this.$el.html(deck.tmpl('TweetView', this.model.toJSON()));
-      return this;
-    };
-
-    return TweetView;
-
-  })(Backbone.View);
 
   WidthChanger = (function(_super) {
 
@@ -350,6 +329,25 @@
 
   })(Backbone.View);
 
+  TweetView = (function(_super) {
+
+    __extends(TweetView, _super);
+
+    function TweetView() {
+      TweetView.__super__.constructor.apply(this, arguments);
+    }
+
+    TweetView.prototype.className = 'mod-tweetitem';
+
+    TweetView.prototype.render = function() {
+      this.$el.html(deck.tmpl('TweetView', this.model.toJSON()));
+      return this;
+    };
+
+    return TweetView;
+
+  })(Backbone.View);
+
   TweetListView = (function(_super) {
 
     __extends(TweetListView, _super);
@@ -372,14 +370,18 @@
 
     TweetListView.prototype.refreshTweets = function() {
       var _this = this;
-      this.model.tweets.each(function(tweet) {
-        var view;
-        view = new TweetView({
-          model: tweet
+      if (this.model.tweets.length) {
+        this.model.tweets.each(function(tweet) {
+          var view;
+          view = new TweetView({
+            model: tweet
+          });
+          _this.manager.add(view);
+          return _this.els.bd.append((view.render().el));
         });
-        _this.manager.add(view);
-        return _this.els.bd.append((view.render().el));
-      });
+      } else {
+        this.els.bd.append(deck.draw('TweetView-noresult'));
+      }
       return this;
     };
 
@@ -418,6 +420,7 @@
       var _this = this;
       this.$el.fadeOut(400, 'easeOutExpo', function() {
         _this.model.destroy();
+        _this.manager.reset();
         _this.$el.remove();
         return _this.trigger('remove', _this);
       });
@@ -630,14 +633,14 @@
           query: query
         });
       });
-      TwitterSearches.loadCached();
       autoreloader.bind('hitzero', function() {
         return TwitterSearches.updateAllSearches();
       });
-      return $('#reloadall').click(function() {
+      $('#reloadall').click(function() {
         autoreloader.reset();
         return TwitterSearches.updateAllSearches();
       });
+      return TwitterSearches.loadCached();
     });
   });
 

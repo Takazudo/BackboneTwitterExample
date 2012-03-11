@@ -1,15 +1,20 @@
-# Template manager
+# intancify template manager
 # http://hamalog.tumblr.com/post/13593032409/jquery-tmpldeck
+
 deck = $.TmplDeck 'templates.html'
 
 # ============================================
-# plugins
+# jQuery plugins
 # ============================================
+
+# just make inside links' target="_blank"
 
 $.fn.linkBlankify = ->
   @each ->
     $(@).find('a').each ->
       $(@).attr 'target', '_blank'
+
+# shake element for notify
 
 $.fn.shake = ->
   @each ->
@@ -23,6 +28,8 @@ $.fn.shake = ->
 # utils
 # ============================================
 
+# just a setTimeout
+
 wait = (milli) ->
   $.Deferred (defer) ->
     setTimeout ->
@@ -32,6 +39,7 @@ wait = (milli) ->
 
 # twttr.formatDate
 # http://awayuki.net/drawer/2011/01/000017.html
+
 twttr.formatDate = (dateString) ->
   d = new Date(dateString)
   year = d.getFullYear()
@@ -49,9 +57,12 @@ twttr.formatDate = (dateString) ->
 # API wrapper
 # ============================================
 
+# namespace
+
 api = {}
 
 # https://dev.twitter.com/docs/api/1/get/search
+
 api.searchTweets = (query) ->
   req = null
   ret = $.Deferred (defer) ->
@@ -63,12 +74,9 @@ api.searchTweets = (query) ->
         rpp: 100
         page: 1
         q: query
-    .pipe (res) ->
-      defer.resolve res
-    , ->
-      defer.reject()
-    .always ->
-      req = null
+    .pipe (res) -> defer.resolve res
+    , -> defer.reject()
+    .always -> req = null
   .promise()
   ret.abort = ->
     req?.abort()
@@ -80,6 +88,7 @@ api.searchTweets = (query) ->
 # ============================================
 
 class Manager
+  # tiny item manager
   _.extend @::, Backbone.Events
   add: (item) ->
     @items ?= []
@@ -100,19 +109,19 @@ class Manager
 # ============================================
 
 class Tweet extends Backbone.Model
+  # wrap one "Tweet"
 
 class TweetCollection extends Backbone.Collection
+  # handles "Tweet"s
   model: Tweet
-  meta: null
 
 class TwitterSeach extends Backbone.Model
+  # handles twitter search.
   update: ->
     @trigger 'searchstart'
     @updateDefer = (api.searchTweets @get('query'))
     @updateDefer.pipe (res) =>
       @tweets = new TweetCollection res.results
-      #delete res.results
-      #@set res
       @trigger 'success'
     , =>
       @trigger 'error'
@@ -123,8 +132,12 @@ class TwitterSeach extends Backbone.Model
     @
 
 class TwitterSeachCollection extends Backbone.Collection
+  # handles "TwitterSearch"s
   model: TwitterSeach
-  localStorage: new Store('twittersearch')
+
+  # save search queries using localStorage.
+  # https://github.com/jeromegn/Backbone.localStorage
+  localStorage: new Store 'twittersearch'
   loadCached: ->
     _.each @localStorage.findAll(), (data) =>
       @add data
@@ -135,6 +148,7 @@ class TwitterSeachCollection extends Backbone.Collection
       @localStorage.create(twitterSearch)
     @localStorage.save()
     @
+
   add: (options) ->
     twitterSearch = (new @model options)
     super(twitterSearch)
@@ -144,14 +158,17 @@ class TwitterSeachCollection extends Backbone.Collection
     @each (model) -> model.update()
     @
 
-# define concrete models
-window.TwitterSearches = new TwitterSeachCollection
+# instancify models
+
+TwitterSearches = new TwitterSeachCollection
 
 # ============================================
 # View - tiny thigns
 # ============================================
 
 class ListViewSpinner
+  # loading spinner
+  # http://fgnass.github.com/spin.js/
   constructor: ($parent) ->
     options =
       color: '#fff'
@@ -161,13 +178,9 @@ class ListViewSpinner
     @el = spinner.el
     @$el = $(spinner.el)
 
-class TweetView extends Backbone.View
-  className: 'mod-tweetitem'
-  render: ->
-    @$el.html( deck.tmpl 'TweetView', @model.toJSON() )
-    @
-
 class WidthChanger extends Backbone.View
+  # need to change the container's width
+  # according to the count of the searches
   options:
     widthPerItem: 300
   initialize: ->
@@ -176,6 +189,7 @@ class WidthChanger extends Backbone.View
     @$el.width (@options.widthPerItem * (size + 1))
 
 class NewList extends Backbone.View
+  # "add new search" box
   events:
     'click .mod-newlist-btn': 'toggle'
   initialize: ->
@@ -186,6 +200,7 @@ class NewList extends Backbone.View
     @$el.toggleClass 'state-close state-open'
 
 class SearchForm extends Backbone.View
+  # serach form in NewList
   events:
     'submit': '_submitHandler'
   initialize: ->
@@ -198,10 +213,18 @@ class SearchForm extends Backbone.View
     @trigger 'submit', val
 
 # ============================================
-# View - something related tweets
+# View - tweets related things
 # ============================================
 
+class TweetView extends Backbone.View
+  # handles the view of "Tweet"
+  className: 'mod-tweetitem'
+  render: ->
+    @$el.html( deck.tmpl 'TweetView', @model.toJSON() )
+    @
+
 class TweetListView extends Backbone.View
+  # handles the view of "TweetCollection"
   className: 'mod-tweetlist'
   events:
     'click .mod-tweetlist-util-reload': 'reload'
@@ -210,10 +233,13 @@ class TweetListView extends Backbone.View
     @els = {}
     @manager = new Manager
   refreshTweets: ->
-    @model.tweets.each (tweet) =>
-      view = new TweetView {model: tweet}
-      @manager.add view
-      @els.bd.append (view.render().el)
+    if @model.tweets.length
+      @model.tweets.each (tweet) =>
+        view = new TweetView {model: tweet}
+        @manager.add view
+        @els.bd.append (view.render().el)
+    else
+      @els.bd.append (deck.draw 'TweetView-noresult')
     @
   renderLoading: ->
     @$el.html( deck.tmpl 'TweetListView-frame', @model.toJSON() )
@@ -236,11 +262,13 @@ class TweetListView extends Backbone.View
   remove: ->
     @$el.fadeOut 400, 'easeOutExpo', =>
       @model.destroy()
+      @manager.reset()
       @$el.remove()
       @trigger 'remove', @
     @
 
 class ListContainerView extends Backbone.View
+  # handles the view of "TwitterSeachCollection"
   initialize: ->
     @manager = new Manager
     @els =
@@ -266,8 +294,8 @@ class ListContainerView extends Backbone.View
 # View - AutoReloader
 # ============================================
 
-# timer manager
 class ReloadTimer
+  # timer manager
   _.extend @::, Backbone.Events
   _tickDefer: null
   constructor: (interval) ->
@@ -342,14 +370,16 @@ class AutoReloader extends Backbone.View
 
 deck.load().done ->
   $ ->
+
+    # instancify views
     newlist = new NewList {el: $('#newlist')}
     listcontainer = new ListContainerView {el: $('#listcontainer')}
     searchform = new SearchForm {el: $('#searchform')}
     autoreloader = new AutoReloader {el: $('#autoreloader')}
 
+    # views' events' call model's method
     searchform.bind 'submit', (query) ->
       TwitterSearches.add {query: query}
-    TwitterSearches.loadCached()
 
     autoreloader.bind 'hitzero', ->
       TwitterSearches.updateAllSearches()
@@ -357,3 +387,7 @@ deck.load().done ->
     $('#reloadall').click ->
       autoreloader.reset()
       TwitterSearches.updateAllSearches()
+
+    # load the cached search queries
+    TwitterSearches.loadCached()
+

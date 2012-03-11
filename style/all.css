@@ -243,33 +243,23 @@ html, body {
 
 /* line 19, ../scss/base.scss */
 a {
-  color: white;
+  color: #fff;
   text-decoration: underline;
-}
-/* line 18, ../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.11.7/frameworks/compass/stylesheets/compass/typography/links/_link-colors.scss */
-a:visited {
-  color: white;
-}
-/* line 21, ../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.11.7/frameworks/compass/stylesheets/compass/typography/links/_link-colors.scss */
-a:focus {
-  color: white;
-}
-/* line 24, ../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.11.7/frameworks/compass/stylesheets/compass/typography/links/_link-colors.scss */
-a:hover {
-  color: white;
-}
-/* line 27, ../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.11.7/frameworks/compass/stylesheets/compass/typography/links/_link-colors.scss */
-a:active {
-  color: white;
 }
 
 /* line 23, ../scss/base.scss */
+a:hover {
+  color: #333;
+  background: #fff;
+}
+
+/* line 27, ../scss/base.scss */
 .mod-all {
   height: 100%;
   font-size: .78em;
 }
 
-/* line 27, ../scss/base.scss */
+/* line 4, ../scss/modules.scss */
 .mod-header {
   border-bottom: 1px solid #fff;
   *zoom: 1;
@@ -284,27 +274,35 @@ a:active {
   background: #333;
   z-index: 1000;
 }
-/* line 39, ../scss/base.scss */
+/* line 16, ../scss/modules.scss */
 .mod-header .mod-header-inner {
   display: table-cell;
   vertical-align: middle;
   text-align: left;
   padding: 0 10px;
 }
-/* line 44, ../scss/base.scss */
+/* line 21, ../scss/modules.scss */
 .mod-header .mod-header-inner h1 {
   font-size: 15px;
   line-height: 29px;
   float: left;
   white-space: nowrap;
 }
-/* line 50, ../scss/base.scss */
+/* line 27, ../scss/modules.scss */
+.mod-header .mod-header-inner p {
+  font-size: 12px;
+  line-height: 29px;
+  float: left;
+  white-space: nowrap;
+  padding: 0 0 0 8px;
+}
+/* line 34, ../scss/modules.scss */
 .mod-header .mod-header-inner .mod-header-util {
   position: absolute;
   right: 10px;
   top: 4px;
 }
-/* line 54, ../scss/base.scss */
+/* line 38, ../scss/modules.scss */
 .mod-header .mod-header-inner .mod-header-util .mod-header-auto {
   position: relative;
   float: left;
@@ -319,12 +317,12 @@ a:active {
   text-align: center;
   margin: 0 4px 0 0;
 }
-/* line 67, ../scss/base.scss */
+/* line 51, ../scss/modules.scss */
 .mod-header .mod-header-inner .mod-header-util .mod-header-auto.state-input {
   color: #fff;
   background: #000;
 }
-/* line 72, ../scss/base.scss */
+/* line 56, ../scss/modules.scss */
 .mod-header .mod-header-inner .mod-header-util .mod-header-reload {
   float: left;
   white-space: nowrap;
@@ -341,35 +339,35 @@ a:active {
   -khtml-border-radius: 4px;
   border-radius: 4px;
 }
-/* line 82, ../scss/base.scss */
+/* line 66, ../scss/modules.scss */
 .mod-header .mod-header-inner .mod-header-util .mod-header-reload:hover {
   background: #999;
 }
 
-/* line 89, ../scss/base.scss */
+/* line 73, ../scss/modules.scss */
 .mod-listcontainer {
   height: 100%;
   width: 100%;
   overflow-x: scroll;
   overflow-y: hidden;
 }
-/* line 94, ../scss/base.scss */
+/* line 78, ../scss/modules.scss */
 .mod-listcontainer .mod-listcontainer-inner {
   height: 100%;
 }
-/* line 96, ../scss/base.scss */
+/* line 80, ../scss/modules.scss */
 .mod-listcontainer .mod-listcontainer-inner .mod-listcontainer-items {
   height: 100%;
   float: left;
 }
 
-/* line 102, ../scss/base.scss */
+/* line 86, ../scss/modules.scss */
 .mod-newlist {
   height: 100%;
   position: relative;
   float: left;
 }
-/* line 106, ../scss/base.scss */
+/* line 90, ../scss/modules.scss */
 .mod-newlist .mod-newlist-btn {
   background: #fff;
   color: #333;
@@ -379,62 +377,60 @@ a:active {
   width: 50px;
   cursor: pointer;
 }
-/* line 115, ../scss/base.scss */
+/* line 99, ../scss/modules.scss */
 .mod-newlist .mod-newlist-content-closed {
   margin: 30px 0 0;
   overflow: hidden;
 }
-/* line 118, ../scss/base.scss */
+/* line 102, ../scss/modules.scss */
 .mod-newlist .mod-newlist-content-closed .mod-newlist-btn {
   margin: 2px;
 }
-/* line 122, ../scss/base.scss */
+/* line 106, ../scss/modules.scss */
 .mod-newlist .mod-newlist-content-opened {
   padding: 110px 20px 0;
   border-right: 1px solid #fff;
   height: 100%;
   position: relative;
 }
-/* line 127, ../scss/base.scss */
+/* line 111, ../scss/modules.scss */
 .mod-newlist .mod-newlist-content-opened h2 {
   font-size: 1.5em;
   padding: 0 0 8px;
 }
-/* line 131, ../scss/base.scss */
+/* line 115, ../scss/modules.scss */
 .mod-newlist .mod-newlist-content-opened input[type=search] {
   margin: 0 8px 0 0;
   width: 180px;
 }
-/* line 135, ../scss/base.scss */
+/* line 119, ../scss/modules.scss */
 .mod-newlist .mod-newlist-content-opened .mod-newlist-btn {
   position: absolute;
   left: 2px;
   top: 32px;
 }
-
-/* line 143, ../scss/base.scss */
+/* line 126, ../scss/modules.scss */
 .mod-newlist.state-close .mod-newlist-content-closed {
   display: block;
 }
-/* line 146, ../scss/base.scss */
+/* line 129, ../scss/modules.scss */
 .mod-newlist.state-close .mod-newlist-content-opened {
   display: none;
 }
-
-/* line 150, ../scss/base.scss */
+/* line 133, ../scss/modules.scss */
 .mod-newlist.state-open {
   width: 300px;
 }
-/* line 152, ../scss/base.scss */
+/* line 135, ../scss/modules.scss */
 .mod-newlist.state-open .mod-newlist-content-closed {
   display: none;
 }
-/* line 155, ../scss/base.scss */
+/* line 138, ../scss/modules.scss */
 .mod-newlist.state-open .mod-newlist-content-opened {
   display: block;
 }
 
-/* line 159, ../scss/base.scss */
+/* line 143, ../scss/modules.scss */
 .mod-tweetlist {
   width: 300px;
   height: 100%;
@@ -444,14 +440,14 @@ a:active {
   border-right: 1px solid #fff;
   padding: 60px 0 0;
 }
-/* line 167, ../scss/base.scss */
+/* line 151, ../scss/modules.scss */
 .mod-tweetlist .mod-tweetlist-hd {
   position: absolute;
   left: 0;
   top: 30px;
   right: 0;
 }
-/* line 172, ../scss/base.scss */
+/* line 156, ../scss/modules.scss */
 .mod-tweetlist .mod-tweetlist-hd .mod-tweetlist-h {
   height: 30px;
   line-height: 30px;
@@ -459,18 +455,19 @@ a:active {
   border-bottom: 1px solid #fff;
   position: relative;
 }
-/* line 178, ../scss/base.scss */
+/* line 162, ../scss/modules.scss */
 .mod-tweetlist .mod-tweetlist-hd .mod-tweetlist-h .mod-tweetlist-label {
   display: block;
   line-height: 29px;
   padding: 0 10px;
   font-weight: bold;
 }
-/* line 183, ../scss/base.scss */
+/* line 167, ../scss/modules.scss */
 .mod-tweetlist .mod-tweetlist-hd .mod-tweetlist-h .mod-tweetlist-label:hover {
+  color: #fff;
   background: #666;
 }
-/* line 187, ../scss/base.scss */
+/* line 172, ../scss/modules.scss */
 .mod-tweetlist .mod-tweetlist-hd .mod-tweetlist-h .mod-tweetlist-remove {
   cursor: pointer;
   position: absolute;
@@ -485,12 +482,12 @@ a:active {
   color: #333;
   text-decoration: none;
 }
-/* line 202, ../scss/base.scss */
+/* line 187, ../scss/modules.scss */
 .mod-tweetlist .mod-tweetlist-hd .mod-tweetlist-util {
   height: 30px;
   position: relative;
 }
-/* line 205, ../scss/base.scss */
+/* line 190, ../scss/modules.scss */
 .mod-tweetlist .mod-tweetlist-hd .mod-tweetlist-util .mod-tweetlist-util-reload {
   position: absolute;
   right: 4px;
@@ -510,11 +507,11 @@ a:active {
   border-radius: 2px;
   cursor: pointer;
 }
-/* line 218, ../scss/base.scss */
+/* line 203, ../scss/modules.scss */
 .mod-tweetlist .mod-tweetlist-hd .mod-tweetlist-util .mod-tweetlist-util-reload:hover {
   background: #999;
 }
-/* line 224, ../scss/base.scss */
+/* line 209, ../scss/modules.scss */
 .mod-tweetlist .mod-tweetlist-bd {
   overflow-y: scroll;
   position: absolute;
@@ -524,27 +521,27 @@ a:active {
   bottom: 0;
   padding: 0 0 20px;
 }
-/* line 232, ../scss/base.scss */
+/* line 217, ../scss/modules.scss */
 .mod-tweetlist .mod-tweetlist-bd::-webkit-scrollbar {
   width: 8px;
   background: #333;
 }
-/* line 236, ../scss/base.scss */
+/* line 221, ../scss/modules.scss */
 .mod-tweetlist .mod-tweetlist-bd::-webkit-scrollbar-thumb {
   background: #888;
 }
 
-/* line 242, ../scss/base.scss */
+/* line 227, ../scss/modules.scss */
 .mod-tweetitem {
   padding: 10px;
   border-bottom: 1px dashed #666;
   position: relative;
 }
-/* line 246, ../scss/base.scss */
+/* line 231, ../scss/modules.scss */
 .mod-tweetitem:hover {
   background: #484848;
 }
-/* line 249, ../scss/base.scss */
+/* line 234, ../scss/modules.scss */
 .mod-tweetitem .mod-tweetitem-prof {
   float: left;
   -moz-border-radius: 2px;
@@ -556,30 +553,34 @@ a:active {
   border: 1px solid #aaa;
   background: #fff;
 }
-/* line 254, ../scss/base.scss */
+/* line 239, ../scss/modules.scss */
 .mod-tweetitem .mod-tweetitem-prof img {
   float: left;
 }
-/* line 258, ../scss/base.scss */
+/* line 243, ../scss/modules.scss */
 .mod-tweetitem .mod-tweetitem-woprof {
   overflow: hidden;
   padding: 0 0 0 10px;
   *zoom: 1;
   /* ie */
 }
-/* line 262, ../scss/base.scss */
+/* line 247, ../scss/modules.scss */
 .mod-tweetitem .mod-tweetitem-woprof .mod-tweetitem-info {
   font-size: .8em;
   padding: 8px 0 0;
 }
-/* line 265, ../scss/base.scss */
+/* line 250, ../scss/modules.scss */
 .mod-tweetitem .mod-tweetitem-woprof .mod-tweetitem-info .mod-tweetitem-name {
   font-size: 1.3em;
 }
 
-/* line 3, ../scss/modules.scss */
-.test2 {
-  color: red;
+/* line 259, ../scss/modules.scss */
+.mod-noresult {
+  font-weight: normal;
+  text-align: center;
+  font-size: 20px;
+  padding: 30px 0;
+  line-height: 1.6;
 }
 
 /* ==|== non-semantic helper classes ========================================
