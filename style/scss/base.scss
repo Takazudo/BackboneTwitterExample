@@ -36,7 +36,6 @@ a{
 	display:table;
 	background:#333;
 	z-index:1000;
-	opacity:.5;
 	.mod-header-inner{
 		display:table-cell;
 		vertical-align:middle;
@@ -44,30 +43,42 @@ a{
 		padding:0 10px;
 		h1{
 			font-size:15px;
+			line-height:29px;
 			float:left;
 			white-space:nowrap;
 		}
 		.mod-header-util{
-			float:right;
+			position:absolute;
+			right:10px;
+			top:4px;
+			span{
+				float:left;
+				white-space:nowrap;
+				font-size:14px;
+				line-height:20px;
+				cursor:pointer;
+				background:#888;
+				color:#fff;
+				padding:0 10px;
+				@include border-radius(4px);
+				&:hover{
+					background:#999;
+				}
+			}
 		}
 	}
 }
-.mod-searchform{
-}
-	input{
-		vertical-align:middle;
-	}
-	input[type=search]{
-		height:13px;
-		width:100px;
-	}
 .mod-listcontainer{
 	height:100%;
 	width:100%;
 	overflow-x:scroll;
 	overflow-y:hidden;
-	.mod-listcontainer-items{
+	.mod-listcontainer-inner{
 		height:100%;
+		.mod-listcontainer-items{
+			height:100%;
+			float:left;
+		}
 	}
 }
 .mod-newlist{
@@ -85,10 +96,13 @@ a{
 	}
 	.mod-newlist-content-closed{
 		margin:30px 0 0;
+		overflow:hidden;
+		.mod-newlist-btn{
+			margin:2px;
+		}
 	}
 	.mod-newlist-content-opened{
-		margin:30px 0 0;
-		padding:80px 20px 0;
+		padding:110px 20px 0;
 		border-right:1px solid #fff;
 		height:100%;
 		position:relative;
@@ -96,14 +110,14 @@ a{
 			font-size:1.5em;
 			padding:0 0 8px;
 		}
-		input[type=text]{
+		input[type=search]{
 			margin:0 8px 0 0;
 			width:180px;
 		}
 		.mod-newlist-btn{
 			position:absolute;
-			left:0;
-			top:0;
+			left:2px;
+			top:32px;
 		}
 	}
 }
@@ -131,44 +145,68 @@ a{
 	float:left;
 	vertical-align:top;
 	border-right:1px solid #fff;
-	padding:30px 0 0;
+	padding:60px 0 0;
 	.mod-tweetlist-hd{
-		height:30px;
-		line-height:30px;
-		font-size:15px;
 		position:absolute;
 		left:0;
-		top:0;
+		top:30px;
 		right:0;
-		border-bottom:1px solid #fff;
-		position:relative;
-		.mod-tweetlist-label{
-			display:block;
-			line-height:29px;
-			padding:0 10px;
-			&:hover{
-				background:#666;
+		.mod-tweetlist-h{
+			height:30px;
+			line-height:30px;
+			font-size:15px;
+			border-bottom:1px solid #fff;
+			position:relative;
+			.mod-tweetlist-label{
+				display:block;
+				line-height:29px;
+				padding:0 10px;
+				font-weight:bold;
+				&:hover{
+					background:#666;
+				}
+			}
+			.mod-tweetlist-remove{
+				cursor:pointer;
+				position:absolute;
+				right:2px;
+				top:2px;
+				bottom:2px;
+				width:26px;
+				line-height:22px;
+				padding:0 0 4px;
+				text-align:center;
+				background:#fff;
+				color:#333;
+				text-decoration:none;
 			}
 		}
-		.mod-tweetlist-remove{
-			cursor:pointer;
-			position:absolute;
-			right:5px;
-			top:5px;
-			bottom:5px;
-			width:20px;
-			line-height:16px;
-			padding:0 0 4px;
-			text-align:center;
-			background:#fff;
-			color:#333;
-			text-decoration:none;
+		.mod-tweetlist-util{
+			height:30px;
+			position:relative;
+			.mod-tweetlist-util-reload{
+				position:absolute;
+				right:4px;
+				top:4px;
+				left:4px;
+				bottom:4px;
+				background:#888;
+				color:#fff;
+				font-size:12px;
+				line-height:22px;
+				text-align:center;
+				@include border-radius(2px);
+				cursor:pointer;
+				&:hover{
+					background:#999;
+				}
+			}
 		}
 	}
 	.mod-tweetlist-bd{
 		overflow-y:scroll;
 		position:absolute;
-		top:60px;
+		top:90px;
 		left:0;
 		width:299px;
 		bottom:0;

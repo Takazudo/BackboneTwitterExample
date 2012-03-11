@@ -13,16 +13,23 @@
 	<div class="mod-header-inner">
 		<h1>BackboneTwitterExample</h1>
 		<div class="mod-header-util">
-			<div class="mod-searchform" id="searchform">
-				<form>
-					<input type="search" placeholder="keyword">
-					<input type="submit" value="search">
-				</form>
-			</div>
+			<span id="reloadall">reload all</span>
 		</div>
 	</div>
 </div>
-<div class="mod-listcontainer" id="listcontainer"><div class="mod-listcontainer-items">
+<div class="mod-listcontainer" id="listcontainer"><div class="mod-listcontainer-inner">
+	<div class="mod-listcontainer-items">
+	<!-- /.mod-listcontainer-items --></div>
+	<div class="mod-newlist state-close" id="newlist">
+		<div class="mod-newlist-content-closed">
+			<div class="mod-newlist-btn">→</div>
+		</div>
+		<div class="mod-newlist-content-opened">
+			<div class="mod-newlist-btn">←</div>
+			<h2>add new search</h2>
+			<form id="searchform"><input type="search" placeholder="keyword"><input type="submit" value="search"></form>
+		</div>
+	<!-- /.mod-newlist --></div>
 <!-- /.mod-listcontainer --></div></div>
 </div></body>
 </html>

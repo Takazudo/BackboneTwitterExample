@@ -12,8 +12,13 @@ TweetView {{{
 
 TweetListView-frame {{{
 	<div class="mod-tweetlist-hd">
-		<a class="mod-tweetlist-label" href="http://twitter.com/search/?q=<%- query %>" target="_blank">Search: <%- query %></a>
-		<span class="mod-tweetlist-remove">×</span>
+		<div class="mod-tweetlist-h">
+			<a class="mod-tweetlist-label" href="http://twitter.com/search/?q=<%- query %>" target="_blank">Search: <%- query %></a>
+			<span class="mod-tweetlist-remove">×</span>
+		</div>
+		<div class="mod-tweetlist-util">
+			<div class="mod-tweetlist-util-reload">reload</div>
+		</div>
 	</div>
 	<div class="mod-tweetlist-bd"><!-- items here --></div>
 }}}

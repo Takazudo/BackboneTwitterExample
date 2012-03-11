@@ -98,19 +98,19 @@ class TweetCollection extends Backbone.Collection
   meta: null
 
 class TwitterSeach extends Backbone.Model
-  fetch: ->
+  update: ->
     @trigger 'searchstart'
-    @fetchDefer = (api.searchTweets @get('query'))
-    @fetchDefer.pipe (res) =>
+    @updateDefer = (api.searchTweets @get('query'))
+    @updateDefer.pipe (res) =>
       @tweets = new TweetCollection res.results
       #delete res.results
       #@set res
       @trigger 'success'
     , =>
       @trigger 'error'
-    @fetchDefer
+    @updateDefer
   destroy: ->
-    @fetchDefer?.abort()
+    @updateDefer?.abort()
     super
     @
 
@@ -131,6 +131,9 @@ class TwitterSeachCollection extends Backbone.Collection
     twitterSearch = (new @model options)
     super(twitterSearch)
     @updateCache(twitterSearch)
+    @
+  updateAllSearches: ->
+    @each (model) -> model.update()
     @
 
 # define concrete models
@@ -160,6 +163,7 @@ class TweetView extends Backbone.View
 class TweetListView extends Backbone.View
   className: 'mod-tweetlist'
   events:
+    'click .mod-tweetlist-util-reload': 'reload'
     'click .mod-tweetlist-remove': 'remove'
   initialize: ->
     @els = {}
@@ -186,9 +190,10 @@ class TweetListView extends Backbone.View
   renderError: ->
     @$el.html( deck.tmpl 'TweetListView-error' )
     @
+  reload: ->
+    @model.update()
   remove: ->
-    to = width:0, opacity:0
-    @$el.animate to, 800, 'easeOutExpo', =>
+    @$el.fadeOut 400, 'easeOutExpo', =>
       @model.destroy()
       @$el.remove()
       @trigger 'remove', @
@@ -200,14 +205,15 @@ class WidthChanger extends Backbone.View
   initialize: ->
     @update 1
   update: (size) ->
-    @$el.width (@options.widthPerItem * size)
+    @$el.width (@options.widthPerItem * (size + 1))
 
 class ListContainerView extends Backbone.View
   initialize: ->
     @manager = new Manager
     @els =
+      inner: @$('.mod-listcontainer-inner')
       items: @$('.mod-listcontainer-items')
-    @widthChanger = new WidthChanger {el: @els.items}
+    @widthChanger = new WidthChanger {el: @els.inner}
     @manager.bind 'sizechange', (size) =>
       @widthChanger.update size
     TwitterSearches.bind 'add', @addOne
@@ -219,13 +225,13 @@ class ListContainerView extends Backbone.View
     model.bind 'searchstart', -> view.renderLoading()
     model.bind 'success', -> view.renderContent()
     model.bind 'error', -> view.renderError()
-    model.fetch()
+    model.update()
     @els.items.append view.el
     @
 
 class SearchForm extends Backbone.View
   events:
-    'submit form': '_submitHandler'
+    'submit': '_submitHandler'
   initialize: ->
     @els =
       input: @$('input[type=search]')
@@ -235,16 +241,28 @@ class SearchForm extends Backbone.View
     if not val then return
     @trigger 'submit', val
 
+class NewList extends Backbone.View
+  events:
+    'click .mod-newlist-btn': 'toggle'
+  initialize: ->
+    @els =
+      content_closed: @$('.mod-newlist-content-closed')
+      content_opened: @$('.mod-newlist-content-opened')
+  toggle: =>
+    @$el.toggleClass 'state-close state-open'
+
 # ============================================
 # do it do it
 # ============================================
 
 deck.load().done ->
   $ ->
-    listcontainer = new ListContainerView(el: $('#listcontainer'))
-    searchform = new SearchForm(el: $('#searchform'))
+    newlist = new NewList {el: $('#newlist')}
+    listcontainer = new ListContainerView {el: $('#listcontainer')}
+    searchform = new SearchForm {el: $('#searchform')}
+
     searchform.bind 'submit', (query) ->
       TwitterSearches.add {query: query}
     TwitterSearches.loadCached()
-    #searchform.$el.find('input[type=search]').val('Takazudo')
-    #searchform.$el.find('form').trigger('submit')
+
+    $('#reloadall').click -> TwitterSearches.updateAllSearches()
