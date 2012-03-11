@@ -32,12 +32,12 @@
         <color>7317724</color>
       </controlProperties>
     </control>
-    <control controlID="232" controlTypeID="com.balsamiq.mockups::Title" x="440" y="256" w="317" h="-1" measuredW="262" measuredH="37" zOrder="4" locked="false" isInGroup="-1">
+    <control controlID="232" controlTypeID="com.balsamiq.mockups::Title" x="440" y="256" w="317" h="-1" measuredW="273" measuredH="37" zOrder="4" locked="false" isInGroup="-1">
       <controlProperties>
         <align>center</align>
         <color>16777215</color>
         <size>24</size>
-        <text>TwitterSeachCollection</text>
+        <text>TwitterSearchCollection</text>
       </controlProperties>
     </control>
     <control controlID="233" controlTypeID="com.balsamiq.mockups::Arrow" x="571" y="403" w="10" h="92" measuredW="150" measuredH="100" zOrder="5" locked="false" isInGroup="-1">
