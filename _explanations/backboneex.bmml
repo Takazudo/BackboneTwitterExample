@@ -252,13 +252,13 @@
         <text>observe%20%22add%22</text>
       </controlProperties>
     </control>
-    <control controlID="261" controlTypeID="com.balsamiq.mockups::Arrow" x="761" y="333" w="244" h="10" measuredW="150" measuredH="100" zOrder="33" locked="false" isInGroup="-1">
+    <control controlID="261" controlTypeID="com.balsamiq.mockups::Arrow" x="765" y="333" w="244" h="10" measuredW="150" measuredH="100" zOrder="33" locked="false" isInGroup="-1">
       <controlProperties>
         <color>13369344</color>
         <curvature>0</curvature>
         <direction>top</direction>
-        <leftArrow>false</leftArrow>
-        <rightArrow>true</rightArrow>
+        <leftArrow>true</leftArrow>
+        <rightArrow>false</rightArrow>
       </controlProperties>
     </control>
     <control controlID="262" controlTypeID="com.balsamiq.mockups::Paragraph" x="819" y="343" w="147" h="44" measuredW="200" measuredH="140" zOrder="34" locked="false" isInGroup="-1">
@@ -318,13 +318,13 @@
         </control>
       </groupChildrenDescriptors>
     </control>
-    <control controlID="267" controlTypeID="com.balsamiq.mockups::Arrow" x="713" y="562" w="314" h="10" measuredW="150" measuredH="100" zOrder="39" locked="false" isInGroup="-1">
+    <control controlID="267" controlTypeID="com.balsamiq.mockups::Arrow" x="721" y="562" w="314" h="10" measuredW="150" measuredH="100" zOrder="39" locked="false" isInGroup="-1">
       <controlProperties>
         <color>13369344</color>
         <curvature>0</curvature>
         <direction>top</direction>
-        <leftArrow>false</leftArrow>
-        <rightArrow>true</rightArrow>
+        <leftArrow>true</leftArrow>
+        <rightArrow>false</rightArrow>
       </controlProperties>
     </control>
     <control controlID="268" controlTypeID="com.balsamiq.mockups::Paragraph" x="831" y="572" w="147" h="44" measuredW="200" measuredH="140" zOrder="40" locked="false" isInGroup="-1">
@@ -464,13 +464,13 @@
         </control>
       </groupChildrenDescriptors>
     </control>
-    <control controlID="277" controlTypeID="com.balsamiq.mockups::Arrow" x="678" y="895" w="396" h="10" measuredW="150" measuredH="100" zOrder="49" locked="false" isInGroup="-1">
+    <control controlID="277" controlTypeID="com.balsamiq.mockups::Arrow" x="688" y="895" w="396" h="10" measuredW="150" measuredH="100" zOrder="49" locked="false" isInGroup="-1">
       <controlProperties>
         <color>13369344</color>
         <curvature>0</curvature>
         <direction>top</direction>
-        <leftArrow>false</leftArrow>
-        <rightArrow>true</rightArrow>
+        <leftArrow>true</leftArrow>
+        <rightArrow>false</rightArrow>
       </controlProperties>
     </control>
     <control controlID="278" controlTypeID="com.balsamiq.mockups::Arrow" x="1119" y="407" w="10" h="50" measuredW="150" measuredH="100" zOrder="50" locked="false" isInGroup="-1">
