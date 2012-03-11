@@ -163,6 +163,8 @@
         return _this.trigger('success');
       }, function() {
         return _this.trigger('error');
+      }).always(function() {
+        return _this.updateDefer = null;
       });
       return this.updateDefer;
     };
@@ -353,6 +355,8 @@
     __extends(TweetListView, _super);
 
     function TweetListView() {
+      this.remove = __bind(this.remove, this);
+      this.reload = __bind(this.reload, this);
       TweetListView.__super__.constructor.apply(this, arguments);
     }
 
@@ -364,11 +368,22 @@
     };
 
     TweetListView.prototype.initialize = function() {
+      var _this = this;
       this.els = {};
-      return this.manager = new Manager;
+      this.manager = new Manager;
+      this.model.bind('searchstart', function() {
+        return _this.renderLoading();
+      });
+      this.model.bind('success', function() {
+        return _this.renderContent();
+      });
+      this.model.bind('error', function() {
+        return _this.renderError();
+      });
+      return this.model.update();
     };
 
-    TweetListView.prototype.refreshTweets = function() {
+    TweetListView.prototype.refreshItems = function() {
       var _this = this;
       if (this.model.tweets.length) {
         this.model.tweets.each(function(tweet) {
@@ -401,7 +416,7 @@
       var _this = this;
       this.els.spinner.fadeOut(function() {
         _this.els.spinner.remove();
-        _this.refreshTweets();
+        _this.refreshItems();
         return _this.els.bd.hide().fadeIn().linkBlankify();
       });
       return this;
@@ -463,21 +478,11 @@
       view = new TweetListView({
         model: model
       });
-      this.manager.add(view);
       view.bind('remove', function() {
         return _this.manager.remove(view);
       });
-      model.bind('searchstart', function() {
-        return view.renderLoading();
-      });
-      model.bind('success', function() {
-        return view.renderContent();
-      });
-      model.bind('error', function() {
-        return view.renderError();
-      });
-      model.update();
       this.els.items.append(view.el);
+      this.manager.add(view);
       return this;
     };
 

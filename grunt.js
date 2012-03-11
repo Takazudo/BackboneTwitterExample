@@ -37,8 +37,8 @@ config.init({
       'js/jsfragments/backbone.localStorage-min.js',
       'js/jsfragments/jquery.tmpldeck.min.js',
       '<banner>',
-      //'js/jsfragments/app.min.js'
-      'js/jsfragments/app.js'
+      'js/jsfragments/app.min.js'
+      //'js/jsfragments/app.js'
     ]
   },
   coffee: {
@@ -92,5 +92,5 @@ task.registerTask('notifyOK', 'done!', function(){
   proc.exec("growlnotify -t 'grunt.js' -m '＼(^o^)／'");
 });
 
-//task.registerTask('default', 'coffee min compass concat cssmin notifyOK');
-task.registerTask('default', 'coffee compass concat cssmin notifyOK');
+task.registerTask('default', 'coffee min compass concat cssmin notifyOK');
+//task.registerTask('default', 'coffee compass concat cssmin notifyOK');

@@ -125,6 +125,8 @@ class TwitterSeach extends Backbone.Model
       @trigger 'success'
     , =>
       @trigger 'error'
+    .always =>
+      @updateDefer = null
     @updateDefer
   destroy: ->
     @updateDefer?.abort()
@@ -217,14 +219,14 @@ class SearchForm extends Backbone.View
 # ============================================
 
 class TweetView extends Backbone.View
-  # handles the view of "Tweet"
+  # represent the view of "Tweet"
   className: 'mod-tweetitem'
   render: ->
     @$el.html( deck.tmpl 'TweetView', @model.toJSON() )
     @
 
 class TweetListView extends Backbone.View
-  # handles the view of "TweetCollection"
+  # represent the view of "TweetCollection"
   className: 'mod-tweetlist'
   events:
     'click .mod-tweetlist-util-reload': 'reload'
@@ -232,7 +234,11 @@ class TweetListView extends Backbone.View
   initialize: ->
     @els = {}
     @manager = new Manager
-  refreshTweets: ->
+    @model.bind 'searchstart', => @renderLoading()
+    @model.bind 'success', => @renderContent()
+    @model.bind 'error', => @renderError()
+    @model.update()
+  refreshItems: ->
     if @model.tweets.length
       @model.tweets.each (tweet) =>
         view = new TweetView {model: tweet}
@@ -251,15 +257,15 @@ class TweetListView extends Backbone.View
   renderContent: ->
     @els.spinner.fadeOut =>
       @els.spinner.remove()
-      @refreshTweets()
+      @refreshItems()
       @els.bd.hide().fadeIn().linkBlankify()
     @
   renderError: ->
     @$el.html( deck.tmpl 'TweetListView-error' )
     @
-  reload: ->
+  reload: =>
     @model.update()
-  remove: ->
+  remove: =>
     @$el.fadeOut 400, 'easeOutExpo', =>
       @model.destroy()
       @manager.reset()
@@ -268,7 +274,7 @@ class TweetListView extends Backbone.View
     @
 
 class ListContainerView extends Backbone.View
-  # handles the view of "TwitterSeachCollection"
+  # represent the view of "TwitterSeachCollection"
   initialize: ->
     @manager = new Manager
     @els =
@@ -281,13 +287,9 @@ class ListContainerView extends Backbone.View
   addOne: (twitterSearch) =>
     model = twitterSearch
     view = new TweetListView {model: model}
-    @manager.add view
     view.bind 'remove', => @manager.remove view
-    model.bind 'searchstart', -> view.renderLoading()
-    model.bind 'success', -> view.renderContent()
-    model.bind 'error', -> view.renderError()
-    model.update()
     @els.items.append view.el
+    @manager.add view
     @
 
 # ============================================
