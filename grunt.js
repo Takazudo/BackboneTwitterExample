@@ -15,8 +15,7 @@ config.init({
       'js/coffee/*.coffee',
       'style/scss/*.scss'
     ],
-    //tasks: 'coffee min compass concat cssmin notifyOK'
-    tasks: 'coffee compass concat cssmin notifyOK'
+    tasks: 'coffee min compass concat cssmin notifyOK'
   },
   compass: {
     'style/scss': 'style/cssfragments'
